@@ -1,11 +1,9 @@
 import React from 'react';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { Shield, AlertTriangle, CheckCircle, XCircle, TrendingUp } from 'lucide-react';
+import { Shield, AlertTriangle, CheckCircle, XCircle, TrendingUp, BarChart3, PieChart as PieChartIcon } from 'lucide-react';
 
 const ResultsOverview = ({ data }) => {
   const { vulnerability_type_results, attack_method_results, errored } = data;
-
-
 
   // Calculate overall statistics
   const totalTests = vulnerability_type_results.reduce((sum, item) => sum + item.passing + item.failing + item.errored, 0);
@@ -32,77 +30,101 @@ const ResultsOverview = ({ data }) => {
   }));
 
   const pieData = [
-    { name: 'Passing', value: totalPassing, color: '#22c55e' },
+    { name: 'Passing', value: totalPassing, color: '#10b981' },
     { name: 'Failing', value: totalFailing, color: '#ef4444' },
     { name: 'Errored', value: totalErrored, color: '#f59e0b' }
   ];
 
-  const COLORS = ['#22c55e', '#ef4444', '#f59e0b'];
+  const COLORS = ['#10b981', '#ef4444', '#f59e0b'];
+
+  const getPassRateColor = (rate) => {
+    const numRate = parseFloat(rate);
+    if (numRate >= 80) return 'text-emerald-600 bg-emerald-50 border-emerald-200';
+    if (numRate >= 60) return 'text-amber-600 bg-amber-50 border-amber-200';
+    return 'text-red-600 bg-red-50 border-red-200';
+  };
+
+  const getPassRateLabel = (rate) => {
+    const numRate = parseFloat(rate);
+    if (numRate >= 80) return 'Excellent';
+    if (numRate >= 60) return 'Good';
+    return 'Critical';
+  };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Overall Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="card">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-primary-100 rounded-lg">
-              <Shield className="h-6 w-6 text-primary-600" />
+        <div className="bg-white/80 backdrop-blur-sm rounded-3xl border border-slate-200/60 p-6 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="flex items-center space-x-4">
+            <div className="p-3 bg-blue-100 rounded-2xl">
+              <Shield className="h-7 w-7 text-blue-600" />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-medium text-gray-600">Total Tests</p>
-              <p className="text-2xl font-bold text-gray-900">{totalTests}</p>
-              <p className="text-xs text-gray-500 mt-1">All security tests performed including passing, failing, and errored tests</p>
+              <p className="text-sm font-medium text-slate-600 mb-1">Total Tests</p>
+              <p className="text-3xl font-bold text-slate-900">{totalTests.toLocaleString()}</p>
+              <p className="text-xs text-slate-500 mt-1">Security assessments performed</p>
             </div>
           </div>
         </div>
 
-        <div className="card">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-green-100 rounded-lg">
-              <CheckCircle className="h-6 w-6 text-green-600" />
+        <div className="bg-white/80 backdrop-blur-sm rounded-3xl border border-slate-200/60 p-6 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="flex items-center space-x-4">
+            <div className="p-3 bg-emerald-100 rounded-2xl">
+              <CheckCircle className="h-7 w-7 text-emerald-600" />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-medium text-gray-600">Passing</p>
-              <p className="text-2xl font-bold text-green-600">{totalPassing}</p>
-              <p className="text-xs text-gray-500 mt-1">AI successfully resisted security attacks (Score = 1.0)</p>
+              <p className="text-sm font-medium text-slate-600 mb-1">Passing</p>
+              <p className="text-3xl font-bold text-emerald-600">{totalPassing.toLocaleString()}</p>
+              <p className="text-xs text-slate-500 mt-1">AI successfully resisted attacks</p>
             </div>
           </div>
         </div>
 
-        <div className="card">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-red-100 rounded-lg">
-              <XCircle className="h-6 w-6 text-red-600" />
+        <div className="bg-white/80 backdrop-blur-sm rounded-3xl border border-slate-200/60 p-6 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="flex items-center space-x-4">
+            <div className="p-3 bg-red-100 rounded-2xl">
+              <XCircle className="h-7 w-7 text-red-600" />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-medium text-gray-600">Failing</p>
-              <p className="text-2xl font-bold text-red-600">{totalFailing}</p>
-              <p className="text-xs text-gray-500 mt-1">AI was vulnerable to security attacks (Score = 0.0)</p>
+              <p className="text-sm font-medium text-slate-600 mb-1">Failing</p>
+              <p className="text-3xl font-bold text-red-600">{totalFailing.toLocaleString()}</p>
+              <p className="text-xs text-slate-500 mt-1">AI was vulnerable to attacks</p>
             </div>
           </div>
         </div>
 
-        <div className="card">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-yellow-100 rounded-lg">
-              <AlertTriangle className="h-6 w-6 text-yellow-600" />
+        <div className="bg-white/80 backdrop-blur-sm rounded-3xl border border-slate-200/60 p-6 shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="flex items-center space-x-4">
+            <div className="p-3 bg-amber-100 rounded-2xl">
+              <TrendingUp className="h-7 w-7 text-amber-600" />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-medium text-gray-600">Pass Rate</p>
-              <p className="text-2xl font-bold text-yellow-600">{overallPassRate}%</p>
-              <p className="text-xs text-gray-500 mt-1">80%+ = Good, 60-79% = Needs attention, Below 60% = Critical</p>
+              <p className="text-sm font-medium text-slate-600 mb-1">Pass Rate</p>
+              <div className="flex items-center space-x-2">
+                <p className="text-3xl font-bold text-slate-900">{overallPassRate}%</p>
+                <span className={`px-2 py-1 text-xs font-medium rounded-full border ${getPassRateColor(overallPassRate)}`}>
+                  {getPassRateLabel(overallPassRate)}
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 mt-1">Overall security performance</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Overall Results Pie Chart */}
-        <div className="card">
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Overall Test Results</h3>
-            <p className="text-sm text-gray-600">Shows distribution of all test outcomes (passing, failing, and errored tests)</p>
+        <div className="bg-white/80 backdrop-blur-sm rounded-3xl border border-slate-200/60 p-8 shadow-sm">
+          <div className="flex items-center space-x-3 mb-6">
+            <div className="p-2 bg-blue-100 rounded-xl">
+              <PieChartIcon className="h-5 w-5 text-blue-600" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-slate-900">Overall Test Results</h3>
+              <p className="text-slate-600">Distribution of all test outcomes</p>
+            </div>
           </div>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
@@ -112,7 +134,7 @@ const ResultsOverview = ({ data }) => {
                 cy="50%"
                 labelLine={false}
                 label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                outerRadius={80}
+                outerRadius={100}
                 fill="#8884d8"
                 dataKey="value"
               >
@@ -120,70 +142,96 @@ const ResultsOverview = ({ data }) => {
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
-              <Tooltip />
+              <Tooltip 
+                contentStyle={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                  border: '1px solid rgba(148, 163, 184, 0.2)',
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)'
+                }}
+              />
             </PieChart>
           </ResponsiveContainer>
         </div>
 
         {/* Vulnerability Type Results */}
-        <div className="card">
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Vulnerability Type Results</h3>
-            <p className="text-sm text-gray-600">Performance breakdown by vulnerability category showing pass/fail rates for each type</p>
+        <div className="bg-white/80 backdrop-blur-sm rounded-3xl border border-slate-200/60 p-8 shadow-sm">
+          <div className="flex items-center space-x-3 mb-6">
+            <div className="p-2 bg-emerald-100 rounded-xl">
+              <BarChart3 className="h-5 w-5 text-emerald-600" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-slate-900">Vulnerability Performance</h3>
+              <p className="text-slate-600">Breakdown by vulnerability category</p>
+            </div>
           </div>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={vulnerabilityData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} />
-              <YAxis />
-              <Tooltip />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+              <XAxis 
+                dataKey="name" 
+                angle={-45} 
+                textAnchor="end" 
+                height={80}
+                tick={{ fontSize: 12, fill: '#64748b' }}
+              />
+              <YAxis tick={{ fontSize: 12, fill: '#64748b' }} />
+              <Tooltip 
+                contentStyle={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                  border: '1px solid rgba(148, 163, 184, 0.2)',
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)'
+                }}
+              />
               <Legend />
-              <Bar dataKey="passing" fill="#22c55e" name="Passing" />
-              <Bar dataKey="failing" fill="#ef4444" name="Failing" />
-              <Bar dataKey="errored" fill="#f59e0b" name="Errored" />
+              <Bar dataKey="passing" fill="#10b981" name="Passing" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="failing" fill="#ef4444" name="Failing" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="errored" fill="#f59e0b" name="Errored" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
 
       {/* Detailed Results Tables */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Vulnerability Type Details */}
-        <div className="card">
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Vulnerability Type Breakdown</h3>
-            <p className="text-sm text-gray-600">
-              Detailed results for each vulnerability type. Higher pass rates indicate better security against specific attack vectors.
-            </p>
+        <div className="bg-white/80 backdrop-blur-sm rounded-3xl border border-slate-200/60 p-8 shadow-sm">
+          <div className="flex items-center space-x-3 mb-6">
+            <div className="p-2 bg-purple-100 rounded-xl">
+              <Shield className="h-5 w-5 text-purple-600" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-slate-900">Vulnerability Breakdown</h3>
+              <p className="text-slate-600">Detailed results by vulnerability type</p>
+            </div>
           </div>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vulnerability</th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pass Rate</th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Results</th>
+            <table className="min-w-full">
+              <thead>
+                <tr className="border-b border-slate-200">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Vulnerability</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Type</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Pass Rate</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Results</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="divide-y divide-slate-100">
                 {vulnerabilityData.map((item, index) => (
-                  <tr key={index}>
-                    <td className="px-3 py-2 text-sm text-gray-900">{item.name.split(' - ')[0]}</td>
-                    <td className="px-3 py-2 text-sm text-gray-600">{item.name.split(' - ')[1]}</td>
-                    <td className="px-3 py-2 text-sm">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        parseFloat(item.passRate) >= 80 ? 'bg-green-100 text-green-800' :
-                        parseFloat(item.passRate) >= 60 ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-red-100 text-red-800'
-                      }`}>
+                  <tr key={index} className="hover:bg-slate-50/50 transition-colors duration-150">
+                    <td className="px-4 py-4 text-sm font-medium text-slate-900">{item.name.split(' - ')[0]}</td>
+                    <td className="px-4 py-4 text-sm text-slate-600">{item.name.split(' - ')[1]}</td>
+                    <td className="px-4 py-4 text-sm">
+                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getPassRateColor(item.passRate)}`}>
                         {item.passRate}%
                       </span>
                     </td>
-                    <td className="px-3 py-2 text-sm text-gray-600">
-                      <span className="text-green-600">{item.passing}P</span>
-                      <span className="text-red-600 ml-2">{item.failing}F</span>
-                      {item.errored > 0 && <span className="text-red-600 ml-2">{item.errored}E</span>}
+                    <td className="px-4 py-4 text-sm text-slate-600">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-emerald-600 font-medium">{item.passing}P</span>
+                        <span className="text-red-600 font-medium">{item.failing}F</span>
+                        {item.errored > 0 && <span className="text-amber-600 font-medium">{item.errored}E</span>}
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -193,39 +241,40 @@ const ResultsOverview = ({ data }) => {
         </div>
 
         {/* Attack Method Details */}
-        <div className="card">
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Attack Method Breakdown</h3>
-            <p className="text-sm text-gray-600">
-              Results grouped by attack technique. This shows how well your AI resists different types of adversarial inputs.
-            </p>
+        <div className="bg-white/80 backdrop-blur-sm rounded-3xl border border-slate-200/60 p-8 shadow-sm">
+          <div className="flex items-center space-x-3 mb-6">
+            <div className="p-2 bg-orange-100 rounded-xl">
+              <AlertTriangle className="h-5 w-5 text-orange-600" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-slate-900">Attack Method Analysis</h3>
+              <p className="text-slate-600">Results grouped by attack technique</p>
+            </div>
           </div>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Attack Method</th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pass Rate</th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Results</th>
+            <table className="min-w-full">
+              <thead>
+                <tr className="border-b border-slate-200">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Attack Method</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Pass Rate</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Results</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="divide-y divide-slate-100">
                 {attackMethodData.map((item, index) => (
-                  <tr key={index}>
-                    <td className="px-3 py-2 text-sm font-medium text-gray-900">{item.name}</td>
-                    <td className="px-3 py-2 text-sm">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        parseFloat(item.passRate) >= 80 ? 'bg-green-100 text-green-800' :
-                        parseFloat(item.passRate) >= 60 ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-red-100 text-red-800'
-                      }`}>
+                  <tr key={index} className="hover:bg-slate-50/50 transition-colors duration-150">
+                    <td className="px-4 py-4 text-sm font-medium text-slate-900">{item.name}</td>
+                    <td className="px-4 py-4 text-sm">
+                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getPassRateColor(item.passRate)}`}>
                         {item.passRate}%
                       </span>
                     </td>
-                    <td className="px-3 py-2 text-sm text-gray-600">
-                      <span className="text-green-600">{item.passing}P</span>
-                      <span className="text-red-600 ml-2">{item.failing}F</span>
-                      {item.errored > 0 && <span className="text-yellow-600 ml-2">{item.errored}E</span>}
+                    <td className="px-4 py-4 text-sm text-slate-600">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-emerald-600 font-medium">{item.passing}P</span>
+                        <span className="text-red-600 font-medium">{item.failing}F</span>
+                        {item.errored > 0 && <span className="text-amber-600 font-medium">{item.errored}E</span>}
+                      </div>
                     </td>
                   </tr>
                 ))}

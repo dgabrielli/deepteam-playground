@@ -4,32 +4,83 @@
 
 @layer base {
   body {
-    @apply bg-gray-50 text-gray-900;
+    @apply bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 text-slate-900;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   }
 }
 
 @layer components {
-  .card {
-    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6;
-  }
-  
   .btn-primary {
-    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-md focus:ring-4 focus:ring-blue-100 focus:outline-none;
   }
   
   .btn-secondary {
-    @apply bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium py-3 px-6 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-md focus:ring-4 focus:ring-blue-100 focus:outline-none;
   }
   
   .status-pass {
-    @apply bg-green-100 text-green-700 border-green-200;
+    @apply bg-emerald-50 text-emerald-700 border-emerald-200;
   }
   
   .status-fail {
-    @apply bg-red-100 text-red-700 border-red-200;
+    @apply bg-red-50 text-red-700 border-red-200;
   }
   
   .status-error {
-    @apply bg-yellow-100 text-yellow-700 border-yellow-200;
+    @apply bg-amber-50 text-amber-700 border-amber-200;
+  }
+
+  /* Custom scrollbar for webkit browsers */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-slate-100 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-300 rounded-full hover:bg-slate-400 transition-colors duration-200;
+  }
+
+  /* Smooth transitions for all interactive elements */
+  * {
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+  }
+
+  /* Focus styles for accessibility */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-4 focus:ring-blue-100 focus:ring-offset-2;
+  }
+
+  /* Glass morphism effects */
+  .glass {
+    @apply bg-white/80 backdrop-blur-sm border border-slate-200/60;
+  }
+
+  .glass-hover {
+    @apply hover:bg-white/90 hover:border-slate-300/60 hover:shadow-lg;
+  }
+
+  /* Ensure dropdown appears above everything */
+  .dropdown-container {
+    position: relative;
+    z-index: 1000;
+  }
+
+  .dropdown-list {
+    position: absolute;
+    z-index: 9999 !important;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 0.75rem;
+  }
+
+  /* Force highest z-index for dropdown */
+  .dropdown-list[style*="z-index"] {
+    z-index: 9999 !important;
   }
 }
