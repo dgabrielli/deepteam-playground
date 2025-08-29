@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Search, ChevronDown, ChevronRight, CheckCircle, XCircle, AlertTriangle, Info } from 'lucide-react';
+import { Search, ChevronDown, ChevronRight, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
 
 const TestCasesViewer = ({ testCases }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -267,12 +267,9 @@ const TestCasesViewer = ({ testCases }) => {
                   {/* Left Column */}
                   <div className="space-y-4">
                     <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium text-gray-900">Input Prompt</h4>
-                        <div className="flex items-center space-x-2 text-xs text-gray-500">
-                          <Info className="h-3 w-3" />
-                          <span>The attack/input used to test the AI</span>
-                        </div>
+                      <div className="mb-2">
+                        <h4 className="font-medium text-gray-900 mb-1">Input Prompt</h4>
+                        <p className="text-xs text-gray-500">The attack/input used to test the AI</p>
                       </div>
                       <div className="p-3 bg-gray-50 rounded-lg">
                         <pre className="text-sm text-gray-700 whitespace-pre-wrap">{testCase.input}</pre>
@@ -280,12 +277,9 @@ const TestCasesViewer = ({ testCases }) => {
                     </div>
                     
                     <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium text-gray-900">AI Response</h4>
-                        <div className="flex items-center space-x-2 text-xs text-gray-500">
-                          <Info className="h-3 w-3" />
-                          <span>How the AI model responded to the attack</span>
-                        </div>
+                      <div className="mb-2">
+                        <h4 className="font-medium text-gray-900 mb-1">AI Response</h4>
+                        <p className="text-xs text-gray-500">How the AI model responded to the attack</p>
                       </div>
                       <div className="p-3 bg-gray-50 rounded-lg">
                         <pre className="text-sm text-gray-700 whitespace-pre-wrap">{testCase.actualOutput}</pre>
@@ -296,12 +290,9 @@ const TestCasesViewer = ({ testCases }) => {
                   {/* Right Column */}
                   <div className="space-y-4">
                     <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium text-gray-900">Assessment Reason</h4>
-                        <div className="flex items-center space-x-2 text-xs text-gray-500">
-                          <Info className="h-3 w-3" />
-                          <span>Why this test passed or failed</span>
-                        </div>
+                      <div className="mb-2">
+                        <h4 className="font-medium text-gray-900 mb-1">Assessment Reason</h4>
+                        <p className="text-xs text-gray-500">Why this test passed or failed</p>
                       </div>
                       <div className="p-3 bg-gray-50 rounded-lg">
                         <p className="text-sm text-gray-700">{testCase.reason}</p>
@@ -310,12 +301,9 @@ const TestCasesViewer = ({ testCases }) => {
 
                     {testCase.error && (
                       <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-medium text-gray-900">Error Details</h4>
-                          <div className="flex items-center space-x-2 text-xs text-gray-500">
-                            <Info className="h-3 w-3" />
-                            <span>Technical issues that prevented test completion</span>
-                          </div>
+                        <div className="mb-2">
+                          <h4 className="font-medium text-gray-900 mb-1">Error Details</h4>
+                          <p className="text-xs text-gray-500">Technical issues that prevented test completion</p>
                         </div>
                         <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                           <p className="text-sm text-yellow-700">{testCase.error}</p>
@@ -325,12 +313,9 @@ const TestCasesViewer = ({ testCases }) => {
 
                     {testCase.metadata && (
                       <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-medium text-gray-900">Metadata</h4>
-                          <div className="flex items-center space-x-2 text-xs text-gray-500">
-                            <Info className="h-3 w-3" />
-                            <span>Additional context and test configuration details</span>
-                          </div>
+                        <div className="mb-2">
+                          <h4 className="font-medium text-gray-900 mb-1">Metadata</h4>
+                          <p className="text-xs text-gray-500">Additional context and test configuration details</p>
                         </div>
                         <div className="p-3 bg-gray-50 rounded-lg">
                           <pre className="text-sm text-gray-700 whitespace-pre-wrap">
