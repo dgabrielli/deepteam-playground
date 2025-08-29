@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Filter, ChevronDown, ChevronRight, Eye, EyeOff, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
+import { Search, ChevronDown, ChevronRight, CheckCircle, XCircle, AlertTriangle, Info } from 'lucide-react';
 
 const TestCasesViewer = ({ testCases }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -7,7 +7,7 @@ const TestCasesViewer = ({ testCases }) => {
   const [selectedAttackMethod, setSelectedAttackMethod] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [expandedCases, setExpandedCases] = useState(new Set());
-  const [showInputs, setShowInputs] = useState(false);
+
 
   // Get unique values for filters
   const vulnerabilities = useMemo(() => 
@@ -71,20 +71,20 @@ const TestCasesViewer = ({ testCases }) => {
 
   return (
     <div className="card">
-      <div className="flex items-center justify-between mb-6">
+      <div className="mb-6">
         <h2 className="text-xl font-semibold text-gray-900">Test Cases</h2>
-        <div className="flex items-center space-x-4">
-          <button
-            onClick={() => setShowInputs(!showInputs)}
-            className="flex items-center space-x-2 px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-          >
-            {showInputs ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-            <span>{showInputs ? 'Hide' : 'Show'} Inputs</span>
-          </button>
-        </div>
+        <p className="text-sm text-gray-600 mt-2">
+          Browse individual test cases to understand specific vulnerabilities and AI responses. 
+          Use filters to focus on areas of concern or specific attack methods.
+        </p>
       </div>
 
       {/* Search and Filters */}
+      <div className="mb-4">
+        <p className="text-sm text-gray-600 mb-3">
+          <strong>Search:</strong> Find specific test cases by content. <strong>Filters:</strong> Narrow down results by vulnerability type, attack method, or test status.
+        </p>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
         {/* Search */}
         <div className="lg:col-span-2">
@@ -164,6 +164,11 @@ const TestCasesViewer = ({ testCases }) => {
       </div>
 
       {/* Test Cases List */}
+      <div className="mb-4">
+        <p className="text-sm text-gray-600">
+          <strong>Tip:</strong> Click on any test case header to expand and view detailed information including the input prompt, AI response, and assessment reasoning.
+        </p>
+      </div>
       <div className="space-y-4">
         {filteredTestCases.map((testCase, index) => (
           <div key={index} className="border border-gray-200 rounded-lg overflow-hidden">
@@ -180,12 +185,33 @@ const TestCasesViewer = ({ testCases }) => {
                 <div className="flex items-center space-x-3">
                   {getStatusIcon(testCase.score, testCase.error)}
                   <div>
-                    <h3 className="font-medium text-gray-900">
-                      {testCase.vulnerability} - {testCase.vulnerability_type}
+                    <h3 className="font-medium text-gray-900 mb-1">
+                      {testCase.vulnerability}
                     </h3>
-                    <p className="text-sm text-gray-600">
-                      {testCase.attackMethod} • {testCase.riskCategory}
-                    </p>
+                    <div className="text-sm text-gray-600 space-y-1">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Type:</span>
+                        <span className="text-gray-700">{testCase.vulnerability_type}</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Attack:</span>
+                        <span className="group relative inline-block text-gray-700">
+                          {testCase.attackMethod}
+                          <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-white text-gray-800 text-xs rounded border border-gray-200 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none max-w-xs z-10">
+                            Attack technique used to test this vulnerability
+                          </span>
+                        </span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Risk:</span>
+                        <span className="group relative inline-block text-gray-700">
+                          {testCase.riskCategory}
+                          <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-white text-gray-800 text-xs rounded border border-gray-200 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none max-w-xs z-10">
+                            Broad risk classification for this test
+                          </span>
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -202,20 +228,65 @@ const TestCasesViewer = ({ testCases }) => {
             {/* Expanded Content */}
             {expandedCases.has(index) && (
               <div className="p-4 bg-white border-t border-gray-200">
+                {/* Test Case Summary */}
+                <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wide">Test Case Summary</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="bg-white p-3 rounded border border-gray-200">
+                      <div className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Vulnerability</div>
+                      <div className="text-sm font-semibold text-gray-900">{testCase.vulnerability}</div>
+                    </div>
+                    <div className="bg-white p-3 rounded border border-gray-200">
+                      <div className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Vulnerability Type</div>
+                      <div className="text-sm font-semibold text-gray-900">{testCase.vulnerability_type}</div>
+                    </div>
+                    <div className="bg-white p-3 rounded border border-gray-200">
+                      <div className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Risk Category</div>
+                      <div className="text-sm font-semibold text-gray-900">{testCase.riskCategory}</div>
+                    </div>
+                    <div className="bg-white p-3 rounded border border-gray-200">
+                      <div className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Attack Method</div>
+                      <div className="text-sm font-semibold text-gray-900">{testCase.attackMethod}</div>
+                    </div>
+                    <div className="bg-white p-3 rounded border border-gray-200">
+                      <div className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Score</div>
+                      <div className={`text-lg font-bold ${testCase.score === 1 ? 'text-green-600' : 'text-red-600'}`}>
+                        {testCase.score}
+                      </div>
+                    </div>
+                    <div className="bg-white p-3 rounded border border-gray-200">
+                      <div className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Status</div>
+                      <div className={`px-3 py-1 text-sm font-bold rounded-full ${testCase.score === 1 ? 'status-pass' : 'status-fail'}`}>
+                        {testCase.score === 1 ? 'PASS' : 'FAIL'}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Left Column */}
                   <div className="space-y-4">
-                    {showInputs && (
-                      <div>
-                        <h4 className="font-medium text-gray-900 mb-2">Input Prompt</h4>
-                        <div className="p-3 bg-gray-50 rounded-lg">
-                          <pre className="text-sm text-gray-700 whitespace-pre-wrap">{testCase.input}</pre>
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="font-medium text-gray-900">Input Prompt</h4>
+                        <div className="flex items-center space-x-2 text-xs text-gray-500">
+                          <Info className="h-3 w-3" />
+                          <span>The attack/input used to test the AI</span>
                         </div>
                       </div>
-                    )}
+                      <div className="p-3 bg-gray-50 rounded-lg">
+                        <pre className="text-sm text-gray-700 whitespace-pre-wrap">{testCase.input}</pre>
+                      </div>
+                    </div>
                     
                     <div>
-                      <h4 className="font-medium text-gray-900 mb-2">AI Response</h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="font-medium text-gray-900">AI Response</h4>
+                        <div className="flex items-center space-x-2 text-xs text-gray-500">
+                          <Info className="h-3 w-3" />
+                          <span>How the AI model responded to the attack</span>
+                        </div>
+                      </div>
                       <div className="p-3 bg-gray-50 rounded-lg">
                         <pre className="text-sm text-gray-700 whitespace-pre-wrap">{testCase.actualOutput}</pre>
                       </div>
@@ -225,7 +296,13 @@ const TestCasesViewer = ({ testCases }) => {
                   {/* Right Column */}
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-medium text-gray-900 mb-2">Assessment Reason</h4>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="font-medium text-gray-900">Assessment Reason</h4>
+                        <div className="flex items-center space-x-2 text-xs text-gray-500">
+                          <Info className="h-3 w-3" />
+                          <span>Why this test passed or failed</span>
+                        </div>
+                      </div>
                       <div className="p-3 bg-gray-50 rounded-lg">
                         <p className="text-sm text-gray-700">{testCase.reason}</p>
                       </div>
@@ -233,7 +310,13 @@ const TestCasesViewer = ({ testCases }) => {
 
                     {testCase.error && (
                       <div>
-                        <h4 className="font-medium text-gray-900 mb-2">Error Details</h4>
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="font-medium text-gray-900">Error Details</h4>
+                          <div className="flex items-center space-x-2 text-xs text-gray-500">
+                            <Info className="h-3 w-3" />
+                            <span>Technical issues that prevented test completion</span>
+                          </div>
+                        </div>
                         <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                           <p className="text-sm text-yellow-700">{testCase.error}</p>
                         </div>
@@ -242,7 +325,13 @@ const TestCasesViewer = ({ testCases }) => {
 
                     {testCase.metadata && (
                       <div>
-                        <h4 className="font-medium text-gray-900 mb-2">Metadata</h4>
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="font-medium text-gray-900">Metadata</h4>
+                          <div className="flex items-center space-x-2 text-xs text-gray-500">
+                            <Info className="h-3 w-3" />
+                            <span>Additional context and test configuration details</span>
+                          </div>
+                        </div>
                         <div className="p-3 bg-gray-50 rounded-lg">
                           <pre className="text-sm text-gray-700 whitespace-pre-wrap">
                             {JSON.stringify(testCase.metadata, null, 2)}

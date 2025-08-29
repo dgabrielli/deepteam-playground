@@ -1,9 +1,24 @@
 import React from 'react';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { Shield, AlertTriangle, CheckCircle, XCircle, TrendingUp } from 'lucide-react';
+import { Shield, AlertTriangle, CheckCircle, XCircle, TrendingUp, Info } from 'lucide-react';
 
 const ResultsOverview = ({ data }) => {
   const { vulnerability_type_results, attack_method_results, errored } = data;
+
+  // Helper function to create tooltip content
+  const createTooltip = (title, description, details = []) => (
+    <div className="max-w-xs">
+      <div className="font-medium text-gray-900 mb-1">{title}</div>
+      <div className="text-sm text-gray-600 mb-2">{description}</div>
+      {details.length > 0 && (
+        <div className="text-xs text-gray-500">
+          {details.map((detail, index) => (
+            <div key={index} className="mb-1">• {detail}</div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 
   // Calculate overall statistics
   const totalTests = vulnerability_type_results.reduce((sum, item) => sum + item.passing + item.failing + item.errored, 0);
@@ -41,7 +56,7 @@ const ResultsOverview = ({ data }) => {
     <div className="space-y-6">
       {/* Overall Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="card">
+        <div className="card group relative">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-primary-100 rounded-lg">
               <Shield className="h-6 w-6 text-primary-600" />
@@ -50,10 +65,25 @@ const ResultsOverview = ({ data }) => {
               <p className="text-sm font-medium text-gray-600">Total Tests</p>
               <p className="text-2xl font-bold text-gray-900">{totalTests}</p>
             </div>
+            <div className="ml-auto">
+              <Info className="h-4 w-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
+            </div>
+          </div>
+          
+          {/* Tooltip */}
+          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-white text-gray-800 text-sm rounded-lg border border-gray-200 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 max-w-xs">
+            {createTooltip(
+              "Total Tests",
+              "The complete count of all security tests performed",
+              [
+                "Includes passing, failing, and errored tests",
+                "Represents the total scope of security assessment"
+              ]
+            )}
           </div>
         </div>
 
-        <div className="card">
+        <div className="card group relative">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-green-100 rounded-lg">
               <CheckCircle className="h-6 w-6 text-green-600" />
@@ -62,10 +92,26 @@ const ResultsOverview = ({ data }) => {
               <p className="text-sm font-medium text-gray-600">Passing</p>
               <p className="text-2xl font-bold text-green-600">{totalPassing}</p>
             </div>
+            <div className="ml-auto">
+              <Info className="h-4 w-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
+            </div>
+          </div>
+          
+          {/* Tooltip */}
+          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-white text-gray-800 text-sm rounded-lg border border-gray-200 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 max-w-xs">
+            {createTooltip(
+              "Passing Tests",
+              "Tests where the AI successfully resisted security attacks",
+              [
+                "Score = 1.0: AI maintained security",
+                "Higher numbers indicate better security posture",
+                "These represent successful security measures"
+              ]
+            )}
           </div>
         </div>
 
-        <div className="card">
+        <div className="card group relative">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-red-100 rounded-lg">
               <XCircle className="h-6 w-6 text-red-600" />
@@ -74,10 +120,26 @@ const ResultsOverview = ({ data }) => {
               <p className="text-sm font-medium text-gray-600">Failing</p>
               <p className="text-2xl font-bold text-red-600">{totalFailing}</p>
             </div>
+            <div className="ml-auto">
+              <Info className="h-4 w-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
+            </div>
+          </div>
+          
+          {/* Tooltip */}
+          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-white text-gray-800 text-sm rounded-lg border border-gray-200 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 max-w-xs">
+            {createTooltip(
+              "Failing Tests",
+              "Tests where the AI was vulnerable to security attacks",
+              [
+                "Score = 0.0: AI failed security test",
+                "Lower numbers indicate better security",
+                "These require immediate attention and fixes"
+              ]
+            )}
           </div>
         </div>
 
-        <div className="card">
+        <div className="card group relative">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-yellow-100 rounded-lg">
               <AlertTriangle className="h-6 w-6 text-yellow-600" />
@@ -86,6 +148,22 @@ const ResultsOverview = ({ data }) => {
               <p className="text-sm font-medium text-gray-600">Pass Rate</p>
               <p className="text-2xl font-bold text-yellow-600">{overallPassRate}%</p>
             </div>
+            <div className="ml-auto">
+              <Info className="h-4 w-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
+            </div>
+          </div>
+          
+          {/* Tooltip */}
+          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-white text-gray-800 text-sm rounded-lg border border-gray-200 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 max-w-xs">
+            {createTooltip(
+              "Overall Pass Rate",
+              "Percentage of all tests that passed security requirements",
+              [
+                "80%+ = Good security posture",
+                "60-79% = Needs attention",
+                "Below 60% = Requires immediate action"
+              ]
+            )}
           </div>
         </div>
       </div>
@@ -94,7 +172,13 @@ const ResultsOverview = ({ data }) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Overall Results Pie Chart */}
         <div className="card">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Overall Test Results</h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900">Overall Test Results</h3>
+            <div className="flex items-center space-x-2 text-sm text-gray-500">
+              <Info className="h-4 w-4" />
+              <span>Shows distribution of all test outcomes</span>
+            </div>
+          </div>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
@@ -118,7 +202,13 @@ const ResultsOverview = ({ data }) => {
 
         {/* Vulnerability Type Results */}
         <div className="card">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Vulnerability Type Results</h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900">Vulnerability Type Results</h3>
+            <div className="flex items-center space-x-2 text-sm text-gray-500">
+              <Info className="h-4 w-4" />
+              <span>Performance by vulnerability category</span>
+            </div>
+          </div>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={vulnerabilityData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -138,7 +228,12 @@ const ResultsOverview = ({ data }) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Vulnerability Type Details */}
         <div className="card">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Vulnerability Type Breakdown</h3>
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Vulnerability Type Breakdown</h3>
+            <p className="text-sm text-gray-600">
+              Detailed results for each vulnerability type. Higher pass rates indicate better security against specific attack vectors.
+            </p>
+          </div>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
@@ -177,7 +272,12 @@ const ResultsOverview = ({ data }) => {
 
         {/* Attack Method Details */}
         <div className="card">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Attack Method Breakdown</h3>
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Attack Method Breakdown</h3>
+            <p className="text-sm text-gray-600">
+              Results grouped by attack technique. This shows how well your AI resists different types of adversarial inputs.
+            </p>
+          </div>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
