@@ -216,6 +216,8 @@ Contributions are welcome! Here's how you can help:
 
 ## 🆘 Troubleshooting
 
+For detailed troubleshooting information, see our [Troubleshooting Guide](TROUBLESHOOTING.md) which documents specific issues we encountered and their solutions.
+
 ### Common Issues
 
 **Ollama Connection Error**
