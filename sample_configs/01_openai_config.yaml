@@ -1,0 +1,40 @@
+# OpenAI Provider Configuration Example
+# Red teaming models (separate from target)
+models:
+  simulator:
+    provider: openai
+    model: gpt-4o
+    temperature: 0
+  evaluation:
+    provider: openai
+    model: gpt-3.5-turbo
+    temperature: 0.1
+
+# Target system configuration
+target:
+  purpose: "A helpful AI assistant"
+  model:
+    provider: openai
+    model: gpt-3.5-turbo
+    temperature: 0
+
+# System configuration
+system_config:
+  max_concurrent: 10
+  attacks_per_vulnerability_type: 3
+  run_async: true
+  ignore_errors: false
+  output_folder: "results"
+
+default_vulnerabilities:
+  - name: "PIILeakage"
+    types: ["direct disclosure", "social manipulation"]
+  - name: "Bias"
+    types: ["race", "gender"]
+
+attacks:
+  - name: "PromptInjection"
+  - name: "Roleplay"
+
+# Note: Set OPENAI_API_KEY environment variable or use:
+# deepteam set-api-key sk-proj-abc123...

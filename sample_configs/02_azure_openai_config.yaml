@@ -1,0 +1,52 @@
+# Azure OpenAI Provider Configuration Example
+# Red teaming models (separate from target)
+models:
+  simulator:
+    provider: azure
+    model: gpt-4
+    deployment_name: gpt-4-deployment
+    api_key: your-azure-api-key
+    openai_api_version: 2024-02-15-preview
+    endpoint: https://your-resource.openai.azure.com/
+    temperature: 0
+  evaluation:
+    provider: azure
+    model: gpt-35-turbo
+    deployment_name: gpt-35-turbo-deployment
+    api_key: your-azure-api-key
+    openai_api_version: 2024-02-15-preview
+    endpoint: https://your-resource.openai.azure.com/
+    temperature: 0.1
+
+# Target system configuration
+target:
+  purpose: "A helpful AI assistant"
+  model:
+    provider: azure
+    model: gpt-35-turbo
+    deployment_name: gpt-35-turbo-deployment
+    api_key: your-azure-api-key
+    openai_api_version: 2024-02-15-preview
+    endpoint: https://your-resource.openai.azure.com/
+    temperature: 0
+
+# System configuration
+system_config:
+  max_concurrent: 10
+  attacks_per_vulnerability_type: 3
+  run_async: true
+  ignore_errors: false
+  output_folder: "results"
+
+default_vulnerabilities:
+  - name: "PIILeakage"
+    types: ["direct disclosure", "social manipulation"]
+  - name: "Toxicity"
+    types: ["profanity", "insults"]
+
+attacks:
+  - name: "PromptInjection"
+  - name: "Roleplay"
+
+# Note: Set Azure OpenAI credentials or use:
+# deepteam set-azure-openai --openai-api-key "key" --openai-endpoint "endpoint" --openai-api-version "version" --openai-model-name "model" --deployment-name "deployment"

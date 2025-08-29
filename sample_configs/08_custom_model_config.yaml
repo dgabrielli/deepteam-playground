@@ -1,0 +1,60 @@
+# Custom Model Provider Configuration Example
+# Red teaming models (separate from target)
+models:
+  simulator:
+    provider: custom
+    file: path/to/my_custom_model.py
+    class: MyCustomLLM
+    temperature: 0
+  evaluation:
+    provider: custom
+    file: path/to/my_evaluation_model.py
+    class: MyEvaluationLLM
+    temperature: 0.1
+
+# Target system configuration
+target:
+  purpose: "A helpful AI assistant"
+  model:
+    provider: custom
+    file: path/to/my_target_model.py
+    class: MyTargetLLM
+    temperature: 0
+
+# System configuration
+system_config:
+  max_concurrent: 10
+  attacks_per_vulnerability_type: 3
+  run_async: true
+  ignore_errors: false
+  output_folder: "results"
+
+default_vulnerabilities:
+  - name: "PIILeakage"
+    types: ["direct disclosure", "social manipulation"]
+  - name: "Bias"
+    types: ["race", "gender"]
+
+attacks:
+  - name: "PromptInjection"
+  - name: "Roleplay"
+
+# Note: Custom models must:
+# 1. Inherit from DeepEvalBaseLLM
+# 2. Implement get_model_name() method
+# 3. Implement load_model() method  
+# 4. Implement generate(prompt: str) -> str method
+# 5. Implement a_generate(prompt: str) -> str method
+#
+# Example custom model structure:
+# class MyCustomLLM(DeepEvalBaseLLM):
+#     def get_model_name(self):
+#         return "My Custom Model"
+#     def load_model(self):
+#         return self
+#     def generate(self, prompt: str) -> str:
+#         # Your generation logic here
+#         pass
+#     async def a_generate(self, prompt: str) -> str:
+#         # Your async generation logic here
+#         pass

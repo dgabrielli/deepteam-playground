@@ -1,0 +1,56 @@
+# Google Gemini Provider Configuration Example
+
+# Option 1: Using API Key
+models:
+  simulator:
+    provider: gemini
+    model: gemini-1.5-pro
+    api_key: your-google-api-key
+    temperature: 0
+  evaluation:
+    provider: gemini
+    model: gemini-1.5-flash
+    api_key: your-google-api-key
+    temperature: 0.1
+
+# Target system configuration
+target:
+  purpose: "A helpful AI assistant"
+  model:
+    provider: gemini
+    model: gemini-1.5-pro
+    api_key: your-google-api-key
+    temperature: 0
+
+# System configuration
+system_config:
+  max_concurrent: 10
+  attacks_per_vulnerability_type: 3
+  run_async: true
+  ignore_errors: false
+  output_folder: "results"
+
+default_vulnerabilities:
+  - name: "PIILeakage"
+    types: ["direct disclosure", "social manipulation"]
+  - name: "Toxicity"
+    types: ["profanity", "insults"]
+
+attacks:
+  - name: "PromptInjection"
+  - name: "Roleplay"
+
+# Note: Set GOOGLE_API_KEY environment variable or use:
+# deepteam set-gemini --google-api-key "key"
+
+# Alternative Option 2: Using Google Cloud (Vertex AI)
+# models:
+#   simulator:
+#     provider: gemini
+#     model: gemini-1.5-pro
+#     project: your-gcp-project-id
+#     location: us-central1
+#     temperature: 0
+# 
+# Note: For Vertex AI, use:
+# deepteam set-gemini --project-id "project" --location "location"

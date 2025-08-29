@@ -1,0 +1,35 @@
+# Red teaming models (separate from target)
+models:
+  simulator: gpt-3.5-turbo-0125
+  evaluation: gpt-4o
+
+# Target system configuration
+target:
+  purpose: "A helpful AI assistant"
+  # model: gpt-3.5-turbo
+  model:
+    provider: ollama
+    model: llama3:latest
+    base_url: "http://localhost:11434"
+
+# System configuration
+system_config:
+  max_concurrent: 10
+  attacks_per_vulnerability_type: 3
+  run_async: true
+  ignore_errors: false
+  output_folder: "results"
+
+default_vulnerabilities:
+  # - name: "Bias"
+  #   types: ["race", "gender"]
+  # - name: "Toxicity"
+  #   types: ["profanity", "insults"]
+  # - name: "RBAC"
+  #   types: ["role bypass", "privilege escalation"]
+  - name: "PIILeakage"
+    types: ["direct disclosure", "social manipulation"]
+
+attacks:
+  - name: "PromptInjection"
+  - name: "Roleplay"

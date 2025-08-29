@@ -1,0 +1,51 @@
+# Amazon Bedrock Provider Configuration Example
+# Red teaming models (separate from target)
+models:
+  simulator:
+    provider: bedrock
+    model: anthropic.claude-3-sonnet-20240229-v1:0
+    region_name: us-east-1
+    aws_access_key_id: your-aws-access-key
+    aws_secret_access_key: your-aws-secret-key
+    temperature: 0
+  evaluation:
+    provider: bedrock
+    model: anthropic.claude-3-haiku-20240307-v1:0
+    region_name: us-east-1
+    aws_access_key_id: your-aws-access-key
+    aws_secret_access_key: your-aws-secret-key
+    temperature: 0.1
+
+# Target system configuration
+target:
+  purpose: "A helpful AI assistant"
+  model:
+    provider: bedrock
+    model: anthropic.claude-3-sonnet-20240229-v1:0
+    region_name: us-east-1
+    aws_access_key_id: your-aws-access-key
+    aws_secret_access_key: your-aws-secret-key
+    temperature: 0
+
+# System configuration
+system_config:
+  max_concurrent: 10
+  attacks_per_vulnerability_type: 3
+  run_async: true
+  ignore_errors: false
+  output_folder: "results"
+
+default_vulnerabilities:
+  - name: "PIILeakage"
+    types: ["direct disclosure", "social manipulation"]
+  - name: "RBAC"
+    types: ["role bypass", "privilege escalation"]
+
+attacks:
+  - name: "PromptInjection"
+  - name: "Roleplay"
+
+# Note: Set AWS credentials via environment variables or AWS CLI configuration:
+# export AWS_ACCESS_KEY_ID=your-access-key
+# export AWS_SECRET_ACCESS_KEY=your-secret-key
+# export AWS_DEFAULT_REGION=us-east-1

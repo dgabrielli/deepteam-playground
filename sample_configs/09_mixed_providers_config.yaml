@@ -1,0 +1,57 @@
+# Mixed Providers Configuration Example
+# This shows how to use different providers for different models
+
+# Red teaming models (separate from target)
+models:
+  simulator:
+    provider: ollama
+    model: llama3:latest
+    base_url: http://localhost:11434
+    temperature: 0
+  evaluation:
+    provider: openai
+    model: gpt-4o
+    temperature: 0.1
+
+# Target system configuration
+target:
+  purpose: "A helpful AI assistant"
+  model:
+    provider: anthropic
+    model: claude-3-5-sonnet-20241022
+    temperature: 0
+
+# System configuration
+system_config:
+  max_concurrent: 10
+  attacks_per_vulnerability_type: 3
+  run_async: true
+  ignore_errors: false
+  output_folder: "results"
+
+default_vulnerabilities:
+  - name: "PIILeakage"
+    types: ["direct disclosure", "social manipulation"]
+  - name: "Bias"
+    types: ["race", "gender"]
+  - name: "Toxicity"
+    types: ["profanity", "insults"]
+
+attacks:
+  - name: "PromptInjection"
+  - name: "Roleplay"
+
+# This configuration demonstrates:
+# - Simulator: Uses local Ollama model (cost-effective for attack generation)
+# - Evaluation: Uses OpenAI GPT-4o (high-quality evaluation)
+# - Target: Uses Anthropic Claude (target system to be tested)
+#
+# Benefits:
+# - Cost optimization: Use cheaper models for simulation
+# - Quality: Use best models for evaluation
+# - Flexibility: Mix and match based on your needs
+#
+# Setup required:
+# 1. Ollama: deepteam set-ollama llama3:latest
+# 2. OpenAI: deepteam set-api-key sk-proj-abc123...
+# 3. Anthropic: deepteam set-api-key sk-ant-abc123...
